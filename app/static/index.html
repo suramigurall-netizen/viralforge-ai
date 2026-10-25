@@ -1,13 +1,63 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ViralForge AI</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ViralForge AI — Creator Studio</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0b1020;color:#f5f7ff;font-family:Arial,sans-serif}
+main{max-width:900px;margin:auto;padding:24px}
+header{font-size:28px;font-weight:bold;color:#a78bfa;margin-bottom:8px}
+p{color:#aab3ca;line-height:1.5}
+section{background:#151c30;border:1px solid #303a55;border-radius:16px;padding:20px;margin-top:20px}
+label{display:block;margin:16px 0 8px}
+input,select{width:100%;padding:13px;border-radius:9px;border:1px solid #3b4662;background:#0b1020;color:white}
+button{width:100%;padding:14px;margin-top:18px;border:0;border-radius:9px;background:#8b5cf6;color:white;font-size:16px;font-weight:bold}
+#status{white-space:pre-wrap;overflow-wrap:anywhere;margin-top:15px}
+</style>
 </head>
 <body>
-  <h1>ViralForge AI</h1>
-  <p>Service is running.</p>
+<main>
+<header>ViralForge AI</header>
+<p>AI Video Clipping Studio — Turn long videos into vertical shorts.</p>
+<section>
+<h2>Create your clips</h2>
+<label for="url">YouTube video URL</label>
+<input id="url" type="url" placeholder="https://www.youtube.com/watch?v=..." required>
+<label for="count">Number of clips</label>
+<select id="count"><option>3</option><option>5</option><option>10</option></select>
+<label for="length">Clip duration</label>
+<select id="length"><option value="30">30 seconds</option><option value="45">45 seconds</option><option value="60">60 seconds</option><option value="90">90 seconds</option></select>
+<label for="ratio">Video format</label>
+<select id="ratio"><option value="9:16">Vertical 9:16</option><option value="1:1">Square 1:1</option><option value="16:9">Landscape 16:9</option></select>
+<button id="create">Generate clips</button>
+<div id="status" role="status"></div>
+</section>
+</main>
+<script>
+document.getElementById("create").addEventListener("click",async()=>{
+const url=document.getElementById("url").value.trim();
+const status=document.getElementById("status");
+if(!url){status.textContent="Please enter a YouTube URL.";return;}
+status.textContent="Submitting your video...";
+try{
+const response=await fetch("/api/jobs",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+video_url:url,
+clip_count:Number(document.getElementById("count").value),
+clip_length:Number(document.getElementById("length").value),
+aspect_ratio:document.getElementById("ratio").value,
+authorized:true
+})
+});
+const data=await response.json();
+if(!response.ok)throw new Error(data.detail||JSON.stringify(data));
+status.textContent=JSON.stringify(data,null,2);
+}catch(error){status.textContent="Error: "+error.message;}
+});
+</script>
 </body>
 </html>
