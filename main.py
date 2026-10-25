@@ -89,7 +89,7 @@ def persist_job(user,job_id,title,clips):
         supabase.table("jobs").insert({"id":job_id,"user_id":user.id,"title":title,"clips":clips,"created_at":time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime())}).execute()
     except Exception as e: print("job metadata save failed:",str(e))
 @app.get("/",response_class=HTMLResponse)
-def home():return FileResponse(BASE/"static"/"index.html")
+def home():return FileResponse(BASE/"app"/"static"/"index.html")
 @app.get("/health")
 def health():return {"ok":True,"ffmpeg":bool(shutil.which("ffmpeg")),"auth_configured":bool(supabase),"billing_configured":bool(stripe.api_key)}
 @app.get("/api/me")
