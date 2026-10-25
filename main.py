@@ -16,8 +16,7 @@ SUPABASE_URL=os.getenv("SUPABASE_URL",""); SUPABASE_KEY=os.getenv("SUPABASE_SERV
 supabase: Optional[Client]=create_client(SUPABASE_URL,SUPABASE_KEY) if SUPABASE_URL and SUPABASE_KEY else None
 stripe.api_key=os.getenv("STRIPE_SECRET_KEY","")
 app=FastAPI(title="ViralForge Ultimate",version="3.0.0")
-app.mount("/static",StaticFiles(directory=str(BASE/"static")),name="static")
-
+app.mount("/static", StaticFiles(directory=str(BASE/"app"/"static")), name="static")
 class JobRequest(BaseModel):
     video_url:str
     authorized:bool=False
